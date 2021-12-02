@@ -1,11 +1,13 @@
 import os
 import time
+from typing import Optional
 
 import requests
-from flask import Flask, request
+from flask import Flask
 from flask_caching import Cache
+from flask_pydantic import validate
 from flask_restful import Api, Resource
-
+from pydantic import BaseModel
 
 app = Flask(__name__)
 app.config['CACHE_TYPE'] = 'simple'
@@ -13,13 +15,20 @@ app.cache = Cache(app)
 api = Api(app)
 
 
+# Validation classes
+class ParametersChachedTemperatures(BaseModel):
+    max: Optional[int] = os.environ.get('DEFAULT_MAX_NUMBER', 5)
+
+
 # Rosources classes
 class TemperatureByCity(Resource):
     @app.cache.cached(timeout=os.environ.get('CACHE_TLL', 300))
+    @validate()
     def get(self, city_name: str):
         wheather_url = 'http://api.openweathermap.org/data/2.5/weather?q={0}&units=metric&appid={1}'
 
-        openweather_response = requests.get(wheather_url.format(city_name, os.environ.get('OPENWEATHER_APIKEY'))).json()
+        # A api key should never be open in the code, but was provided to simplify the process and can only be used this way in development
+        openweather_response = requests.get(wheather_url.format(city_name, os.environ.get('OPENWEATHER_APIKEY', '8006ee749a6b40a3235382082abb73c8'))).json()
 
         if openweather_response['cod'] == 200:
             response = {
@@ -40,9 +49,9 @@ class TemperatureByCity(Resource):
 
 
 class Cached(Resource):
-    def get(self):
-        max_number = 5
-
+    @validate()
+    def get(self, query: ParametersChachedTemperatures):
+        max_number = query.max
         keys = list(app.cache.cache._cache.keys())[:max_number]
 
         response = [app.cache.get(k) for k in keys]
