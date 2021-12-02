@@ -54,7 +54,7 @@ class Cached(Resource):
         max_number = query.max
         keys = list(app.cache.cache._cache.keys())[:max_number]
 
-        response = [app.cache.get(k) for k in keys]
+        response = [app.cache.get(k) for k in keys if 'error' not in app.cache.get(k)]
         return response
 
 
