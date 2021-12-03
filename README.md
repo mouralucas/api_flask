@@ -38,8 +38,8 @@ The requirements needed to execute are listed below:
 To run the project:
 
 ```bash
-pip -m flask run (Windows)
-pip3 -m flask run (Linux)
+python -m flask run (Windows)
+python3 -m flask run (Linux)
 ```
 
 ## Usage
