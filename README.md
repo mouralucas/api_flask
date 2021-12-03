@@ -53,8 +53,8 @@ To get information from the API Postman can be used with the given URL available
 To run the tests just execute the fallowing command in the terminal:
 
 ```bash
-pip -m unittest tests/tests.py (Windows)
-pip3 -m unittest tests/tests.py (Linux)
+python -m unittest tests/tests.py (Windows)
+python3 -m unittest tests/tests.py (Linux)
 ```
 
 These tests consist in validate the return content in cases of success. It also validates the endpoint that get the n cached values based on parameter "max".
