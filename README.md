@@ -1,6 +1,6 @@
 # Flask API
 
-Code teste for DevGrid
+Code for studies
 
 ## Installation
 
